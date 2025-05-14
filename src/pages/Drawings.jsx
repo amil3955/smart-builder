@@ -1,8 +1,10 @@
+import React from 'react';
+import ExportPanel from '../components/3D/ExportPanel';
+
 function Drawings() {
   return (
     <div>
-      <h1>Drawings</h1>
-      <p>Here you can find various drawings.</p>
+      <ExportPanel />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import React from 'react';
 import BuildCanvas from "../scenes/BuildCanvas";
 import Sidebar from "../components/UI/Sidebar";
 import PanelEdit from "../components/UI/PanelEdit";
