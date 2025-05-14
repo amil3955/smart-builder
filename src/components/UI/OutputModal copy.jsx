@@ -1,52 +1,7 @@
-// Example: Adding DXF export to OutputModal.jsx
-import React, { useState, useEffect } from 'react';
-import { useThree, Canvas } from '@react-three/fiber';
-import { exportGLBtoDXF } from '../../utils/glbToDXF';
+import React, { useState } from 'react';
 
-
-// Component to handle DXF export within the Canvas context
-const DXFExportHandler = ({ onExportComplete }) => {
-  // Get access to the Three.js scene
-  const { scene } = useThree();
-
-  // Expose a method to export the scene to DXF
-  useEffect(() => {
-    // Add the export function to the window object for external access
-    window.exportSceneToDXF = async (options = {}) => {
-      try {
-        const result = await exportGLBtoDXF(scene, {
-          filename: options.filename || 'wall_layout.dxf',
-          includeLabels: options.includeLabels !== false, // Default to true
-          ...options
-        });
-
-        if (onExportComplete) {
-          onExportComplete(true);
-        }
-
-        return result;
-      } catch (error) {
-        console.error('Error exporting to DXF:', error);
-
-        if (onExportComplete) {
-          onExportComplete(false, error);
-        }
-
-        return false;
-      }
-    };
-
-    // Clean up on unmount
-    return () => {
-      delete window.exportSceneToDXF;
-    };
-  }, [scene, onExportComplete]);
-
-  // This component doesn't render anything
-  return null;
-};
-
-const OutputModalWithDXF = ({ isOpen, onClose }) => {
+const OutputModal = ({ isOpen, onClose }) => {
+  // State for checkboxes with `name` for labels
   const [checkboxState, setCheckboxState] = useState({
     pdfSections: [
       { key: 'coverSheet', checked: false, name: 'Cover Sheet' },
@@ -72,9 +27,7 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
       { key: 'materialListExcel', checked: false, name: 'Material List Excel' },
       { key: 'crossSectionsOther', checked: false, name: 'Cross Sections' },
       { key: 'sheathingDrawingsOther', checked: false, name: 'Sheathing Drawings' },
-      // Add our new DXF export option
-      { key: 'wallLayout2DDXF', checked: false, name: 'Wall Layout 2D DXF (Clean Export)' },
-      { key: 'wallLayoutDxf', checked: false, name: 'Wall Layout DXF (Legacy)' },
+      { key: 'wallLayoutDxf', checked: false, name: 'Wall Layout DXF' },
       { key: 'postLayoutDxf', checked: false, name: 'Post Layout DXF' },
       { key: 'trussLayoutDxf', checked: false, name: 'Truss Layout DXF' },
       { key: 'assemblyDxfs', checked: false, name: 'Assembly DXFs' },
@@ -91,13 +44,6 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
     ],
   });
 
-  // State for export status
-  const [exportStatus, setExportStatus] = useState({
-    isExporting: false,
-    success: null,
-    message: ''
-  });
-
   // Generic handleChange function
   const handleChange = (section, key) => {
     setCheckboxState((prevState) => ({
@@ -107,6 +53,7 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
       ),
     }));
   };
+
   // Toggle all checkboxes for all categories
   const toggleAllCategories = (value) => {
     setCheckboxState((prevState) => ({
@@ -115,72 +62,16 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
     }));
   };
 
-  const handleExportComplete = (success, error) => {
-    setExportStatus({
-      isExporting: false,
-      success,
-      message: success
-        ? 'DXF export completed successfully!'
-        : `Export failed: ${error ? error.message : 'Unknown error'}`
-    });
-
-    setExportStatus(prevState => ({
-      ...prevState,
-      message: ''
-    }));
-  };
-
-  const handleExportDXF = () => {
-    setExportStatus({
-      isExporting: true,
-      success: null,
-      message: 'Preparing DXF export...'
-    });
-
-    // Call the export function exposed by DXFExportHandler
-    if (window.exportSceneToDXF) {
-      window.exportSceneToDXF({
-        filename: 'wall_layout.dxf',
-        includeLabels: true
-      });
-    } else {
-      setExportStatus({
-        isExporting: false,
-        success: false,
-        message: 'Export function not available. Please wait for the scene to load.'
-      });
-    }
-  };
   // Download selected checkboxes
   const handleDownload = () => {
     const selectedPdfSections = checkboxState.pdfSections.filter((item) => item.checked);
     const selectedOtherFiles = checkboxState.otherFiles.filter((item) => item.checked);
-    const wallLayout2DDXF = selectedOtherFiles.find(item => item.key === 'wallLayout2DDXF');
 
-    if (wallLayout2DDXF) {
-      setExportStatus({
-        isExporting: true,
-        success: null,
-        message: 'Preparing Wall Layout 2D DXF export...'
-      });
+    console.log('Selected PDF Sections:', selectedPdfSections);
+    console.log('Selected Other Files:', selectedOtherFiles);
 
-      setExportStatus({
-        isExporting: false,
-        success: true,
-        message: 'Wall Layout 2D DXF export would happen here!'
-      });
-
-      // Clear the message after a few seconds
-      handleExportDXF();
-      setExportStatus(prevStatus => ({
-        ...prevStatus,
-        message: ''
-      }));
-
-    } else {
-      // Regular download flow for other selected items
-      alert('Download initiated for selected items.');
-    }
+    // Add your download logic here
+    alert('Download initiated for selected items.');
   };
 
   if (!isOpen) return null;
@@ -221,7 +112,7 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
             </div>
             <div className="grid grid-cols-4 gap-y-3 mt-3">
               {checkboxState.otherFiles.map(({ key, checked, name }) => (
-                <div className={`flex items-center ${key === 'wallLayout2DDXF' ? 'bg-blue-50 rounded p-1' : ''}`} key={key}>
+                <div className="flex items-center" key={key}>
                   <input
                     type="checkbox"
                     id={key}
@@ -229,29 +120,11 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
                     onChange={() => handleChange('otherFiles', key)}
                     className="mr-2"
                   />
-                  <label
-                    className={`text-sm ${key === 'wallLayout2DDXF' ? 'text-blue-800 font-medium' : 'text-stone-950'}`}
-                    htmlFor={key}
-                  >
-                    {name}
-                    {key === 'wallLayout2DDXF' && <span className="ml-1 text-xs bg-blue-200 text-blue-800 px-1 rounded">New</span>}
-                  </label>
+                  <label className="text-sm text-stone-950" htmlFor={key}>{name}</label>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Status message */}
-          {exportStatus.message && (
-            <div
-              className={`mb-4 p-2 rounded text-sm ${exportStatus.success === true ? 'bg-green-100 text-green-700' :
-                exportStatus.success === false ? 'bg-red-100 text-red-700' :
-                  'bg-blue-100 text-blue-700'
-                }`}
-            >
-              {exportStatus.message}
-            </div>
-          )}
 
           {/* Action buttons */}
           <div className="flex justify-center mt-6 space-x-2">
@@ -268,12 +141,10 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
               All Off
             </button>
             <button
-              className={`bg-blue-600 text-white text-sm px-2 py-1 rounded hover:bg-blue-700 ${exportStatus.isExporting ? 'opacity-70 cursor-not-allowed' : ''
-                }`}
+              className="bg-blue-600 text-white text-sm px-2 py-1 rounded hover:bg-blue-700"
               onClick={handleDownload}
-              disabled={exportStatus.isExporting}
             >
-              {exportStatus.isExporting ? 'Processing...' : 'Download'}
+              Download
             </button>
             <button
               className="bg-blue-600 text-white text-sm px-2 py-1 rounded hover:bg-blue-700"
@@ -283,18 +154,9 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
             </button>
           </div>
         </div>
-        <div>
-          <Canvas
-            shadows
-            style={{ position: 'absolute' }}
-          >
-            {/* DXF Export Handler */}
-            <DXFExportHandler onExportComplete={handleExportComplete} />
-          </Canvas>
-        </div>
       </div>
     </div>
   );
 };
 
-export default OutputModalWithDXF;
+export default OutputModal;

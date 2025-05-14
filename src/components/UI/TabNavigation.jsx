@@ -4,6 +4,7 @@ import ThreeView from "../../pages/ThreeView"; // Import the ThreeView component
 import TwoView from "../../pages/TwoView"; // Import the TwoDView component
 import JobReview from "../../pages/JobReview"; // Import the JobReview component
 import Drawings from "../../pages/Drawings"; // Import the Drawings component
+import Test from "../../pages/Test"; // Import the Test component
 
 function TabNavigation() {
   const [activeTab, setActiveTab] = useState("Advanced Edit"); // State to track the active tab
@@ -56,8 +57,6 @@ function TabNavigation() {
         >
           Advanced Edit
         </button>
-
-        {/* Spacer */}
         <div className="flex-grow"></div>
 
         {/* Action Buttons */}
@@ -72,6 +71,7 @@ function TabNavigation() {
         {activeTab === "Job Review" && <JobReview />}
         {activeTab === "Drawings" && <Drawings />}
         {activeTab === "Advanced Edit" && <AdvancedEdit />}
+        {/* {activeTab === "Test" && <Test />} */}
       </div>
     </div>
   );
