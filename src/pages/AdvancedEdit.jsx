@@ -9,7 +9,7 @@ function AdvancedEdit() {
             <Sidebar />
             <div className="flex flex-col flex-1">
                 <div className="flex-1 bg-gray-50">
-                    <BuildCanvas />
+                    {/* <BuildCanvas /> */}
                 </div>
             </div>
             <PanelEdit />

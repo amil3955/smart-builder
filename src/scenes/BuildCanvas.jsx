@@ -1,7 +1,6 @@
 import React, { Suspense, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrthographicCamera } from '@react-three/drei';
-import GLBModel from './GLBModel';
 import LoadingIndicator from '../components/3D/LoadingIndicator';
 import ModelControls from '../components/3D/ModelControls';
 

@@ -14,7 +14,7 @@ function Navbar() {
   const handleModalClose = () => setIsModalOpen(false);
 
   return (
-    <div className="flex items-center justify-between px-4 py-1 h-14 bg-blue-600 text-white">
+    <div className="flex items-center justify-between px-4 py-1 h-14 bg-blue-500 text-white">
       <div className="flex items-center">
         <button className="bg-white text-blue-600 px-3 py-1 rounded mr-6 hover:bg-gray-100">HOME</button>
         <h1 className="text-sm font-medium">
@@ -42,7 +42,6 @@ function Navbar() {
           {exportStatus.message}
         </div>
       )}
-      
       {/* Download Outputs Modal */}
       <OutputModal isOpen={isModalOpen} onClose={handleModalClose} />
     </div>
