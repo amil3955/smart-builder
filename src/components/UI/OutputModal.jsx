@@ -1,14 +1,9 @@
 // Example: Adding DXF export to OutputModal.jsx
 import React, { useState, useEffect } from 'react';
 import { useThree, Canvas } from '@react-three/fiber';
-import { exportGLBtoDXF } from '../../utils/glbToDXF';
 
-
-// Component to handle DXF export within the Canvas context
 const DXFExportHandler = ({ onExportComplete }) => {
-  // Get access to the Three.js scene
   const { scene } = useThree();
-
   // Expose a method to export the scene to DXF
   useEffect(() => {
     // Add the export function to the window object for external access
@@ -189,13 +184,13 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-md w-full max-w-4xl">
         {/* Modal header */}
-        <div className="bg-blue-600 text-white py-3 px-4 font-bold text-lg rounded-t-md">
+        <div className="bg-blue-500 text-white py-3 px-4 font-bold text-lg rounded-t-md">
           Download Outputs
         </div>
         <div className="p-4">
           {/* PDF Sections */}
           <div className="mb-4">
-            <div className="bg-blue-600 text-white py-2 px-4 font-bold">
+            <div className="bg-blue-500 text-white py-2 px-4 font-bold">
               PDF Sections:
             </div>
             <div className="grid grid-cols-4 gap-y-3 mt-3">
@@ -216,7 +211,7 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
 
           {/* Other Files */}
           <div className="mb-4">
-            <div className="bg-blue-600 text-white py-2 px-4 font-bold">
+            <div className="bg-blue-500 text-white py-2 px-4 font-bold">
               Other Files:
             </div>
             <div className="grid grid-cols-4 gap-y-3 mt-3">
@@ -256,19 +251,19 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
           {/* Action buttons */}
           <div className="flex justify-center mt-6 space-x-2">
             <button
-              className="bg-blue-600 text-white text-sm px-2 py-1 rounded hover:bg-blue-700"
+              className="bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600"
               onClick={() => toggleAllCategories(true)}
             >
               All On
             </button>
             <button
-              className="bg-blue-600 text-white text-sm px-2 py-1 rounded hover:bg-blue-700"
+              className="bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600"
               onClick={() => toggleAllCategories(false)}
             >
               All Off
             </button>
             <button
-              className={`bg-blue-600 text-white text-sm px-2 py-1 rounded hover:bg-blue-700 ${exportStatus.isExporting ? 'opacity-70 cursor-not-allowed' : ''
+              className={`bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600 ${exportStatus.isExporting ? 'opacity-70 cursor-not-allowed' : ''
                 }`}
               onClick={handleDownload}
               disabled={exportStatus.isExporting}
@@ -276,7 +271,7 @@ const OutputModalWithDXF = ({ isOpen, onClose }) => {
               {exportStatus.isExporting ? 'Processing...' : 'Download'}
             </button>
             <button
-              className="bg-blue-600 text-white text-sm px-2 py-1 rounded hover:bg-blue-700"
+              className="bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600"
               onClick={onClose}
             >
               Cancel

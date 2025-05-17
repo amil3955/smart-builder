@@ -16,7 +16,7 @@ const LoadingIndicator = ({ progress = 0 }) => {
           {Math.round(progress * 100)}%
         </div>
       </div> */}
-      <div className="spinner">
+      <div className="lspinner">
         <div className="lds-roller">
           <div></div>
           <div></div>
